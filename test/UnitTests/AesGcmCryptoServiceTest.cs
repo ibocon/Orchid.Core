@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Orchid.UnitTests.Core;
 
-public sealed class AesGcmCryptoServiceTests
+public sealed class AesGcmCryptoServiceTest
 {
     [Fact]
     public void Encrypt_And_Decrypt_Should_Restore_Original_PlainText()

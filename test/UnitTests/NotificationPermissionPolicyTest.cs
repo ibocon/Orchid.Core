@@ -7,7 +7,7 @@ namespace Orchid.UnitTests.Core;
 /// <summary>
 /// <see cref="NotificationPermissionPolicy"/>의 요청 여부 판정을 확인하는 단위 테스트입니다.
 /// </summary>
-public sealed class NotificationPermissionPolicyTests
+public sealed class NotificationPermissionPolicyTest
 {
     [Theory]
     [InlineData(false, false, true)]

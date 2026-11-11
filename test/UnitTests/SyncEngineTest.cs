@@ -10,7 +10,7 @@ namespace Orchid.UnitTests.Core;
 /// <summary>
 /// <see cref="SyncEngine"/>의 중복 해시 감지 및 E2EE 클립보드 처리 흐름을 검증하는 단위 테스트입니다.
 /// </summary>
-public sealed class SyncEngineTests
+public sealed class SyncEngineTest
 {
     [Fact]
     public async Task ProcessLocalClipboardAsync_When_Duplicate_Content_Should_Return_Failure()

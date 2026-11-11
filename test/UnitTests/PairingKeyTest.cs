@@ -8,7 +8,7 @@ namespace Orchid.UnitTests.Core;
 /// <summary>
 /// <see cref="PairingKey"/>의 직렬화 왕복과 형식 검증을 확인하는 단위 테스트입니다.
 /// </summary>
-public sealed class PairingKeyTests
+public sealed class PairingKeyTest
 {
     [Fact]
     public void Parse_When_Payload_Roundtrips_Should_Keep_PairingId_And_Key()

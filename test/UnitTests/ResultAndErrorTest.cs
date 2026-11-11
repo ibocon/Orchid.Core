@@ -7,7 +7,7 @@ namespace Orchid.UnitTests.Core;
 /// <summary>
 /// <see cref="Result"/> 및 <see cref="Error"/>의 불변식과 예외 안전성을 검증하는 단위 테스트입니다.
 /// </summary>
-public sealed class ResultAndErrorTests
+public sealed class ResultAndErrorTest
 {
     [Fact]
     public void Result_Success_Should_Have_IsSuccess_True_And_NoError()

@@ -12,7 +12,7 @@ namespace Orchid.UnitTests.Core;
 /// <summary>
 /// <see cref="ClipboardSyncCoordinator"/>의 송신·수신 반영·되송신 억제를 검증하는 단위 테스트입니다.
 /// </summary>
-public sealed class ClipboardSyncCoordinatorTests
+public sealed class ClipboardSyncCoordinatorTest
 {
     [Fact]
     public async Task OnLocalChange_When_Text_Copied_Should_Send_Encrypted_Payload_To_Pairing_Group()
