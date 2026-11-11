@@ -1,0 +1,49 @@
+name: publish-nuget
+
+on:
+  push:
+    tags:
+      - 'client-v*.*.*'
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref to build (branch, tag, or full SHA). Defaults to the dispatch ref.'
+        required: false
+        default: ''
+      version-suffix:
+        description: 'SemVer 2.0 prerelease suffix.'
+        required: false
+        default: 'auto'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-nuget-${{ github.event.inputs.ref || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: publish Orchid.Core nuget
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PACK_PROJECT: src/Orchid.Core.csproj
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.ref || github.ref }}
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - name: Pack
+        run: dotnet pack "${PACK_PROJECT}" -c Release -o artifacts/nupkg -p:IncludeSymbols=false -p:EnforceCodeStyleInBuild=false
+      - name: Push to BaGetter
+        env:
+          BAGETTER_FEED_URL: https://hanul.botanicsoft.com/bagetter/v3/index.json
+          BAGETTER_API_KEY: ${{ secrets.BAGETTER_API_KEY }}
+        run: |
+          for pkg in artifacts/nupkg/*.nupkg; do
+            dotnet nuget push "${pkg}" --source "${BAGETTER_FEED_URL}" --api-key "${BAGETTER_API_KEY}" --skip-duplicate
+          done

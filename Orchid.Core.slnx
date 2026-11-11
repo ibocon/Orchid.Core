@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/Orchid.Core.csproj" />
+  <Project Path="test/UnitTests/Orchid.Core.UnitTests.csproj" />
+  <Project Path="test/ArchitectureTests/Orchid.Core.ArchTests.csproj" />
+</Solution>
