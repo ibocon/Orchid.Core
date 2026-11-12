@@ -14,7 +14,7 @@ public sealed class NotificationPermissionPolicyTest
     [InlineData(true, false, false)]
     [InlineData(false, true, false)]
     [InlineData(true, true, false)]
-    public void ShouldRequest_When_State_Given_Should_Request_Only_When_Neither_Granted_Nor_Requested(bool granted, bool requestedBefore, bool expected)
+    public void ShouldRequestWhenStateGivenShouldRequestOnlyWhenNeitherGrantedNorRequested(bool granted, bool requestedBefore, bool expected)
     {
         // Given
         // When

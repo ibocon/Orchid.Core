@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using FluentAssertions;
 using Orchid.Core.Cryptography;
+using Orchid.Core.Domain.Common;
 using Xunit;
 
 namespace Orchid.UnitTests.Core;
@@ -8,22 +9,22 @@ namespace Orchid.UnitTests.Core;
 public sealed class AesGcmCryptoServiceTest
 {
     [Fact]
-    public void Encrypt_And_Decrypt_Should_Restore_Original_PlainText()
+    public void EncryptAndDecryptShouldRestoreOriginalPlainText()
     {
         // Given
-        var service = new AesGcmCryptoService();
-        var key = new byte[32];
+        AesGcmCryptoService service = new AesGcmCryptoService();
+        byte[] key = new byte[32];
         RandomNumberGenerator.Fill(key);
-        var plainText = "Sensitive Clipboard Data"u8.ToArray();
+        byte[] plainText = "Sensitive Clipboard Data"u8.ToArray();
 
         // When
-        var encryptResult = service.Encrypt(plainText, key);
+        Result<(byte[] CipherText, byte[] Nonce, byte[] Tag)> encryptResult = service.Encrypt(plainText, key);
 
         // Then
         encryptResult.IsSuccess.Should().BeTrue();
         encryptResult.Value.CipherText.Should().NotBeEquivalentTo(plainText);
 
-        var decryptResult = service.Decrypt(
+        Result<byte[]> decryptResult = service.Decrypt(
             encryptResult.Value.CipherText,
             encryptResult.Value.Nonce,
             encryptResult.Value.Tag,
@@ -38,15 +39,15 @@ public sealed class AesGcmCryptoServiceTest
     [InlineData(16)]
     [InlineData(31)]
     [InlineData(33)]
-    public void Encrypt_With_Invalid_Key_Length_Should_Fail(int keyLength)
+    public void EncryptWithInvalidKeyLengthShouldFail(int keyLength)
     {
         // Given
-        var service = new AesGcmCryptoService();
+        AesGcmCryptoService service = new AesGcmCryptoService();
         byte[] invalidKey = new byte[keyLength];
         byte[] plainText = "Sample Data"u8.ToArray();
 
         // When
-        var result = service.Encrypt(plainText, invalidKey);
+        Result<(byte[] CipherText, byte[] Nonce, byte[] Tag)> result = service.Encrypt(plainText, invalidKey);
 
         // Then
         result.IsFailure.Should().BeTrue();
@@ -54,20 +55,20 @@ public sealed class AesGcmCryptoServiceTest
     }
 
     [Fact]
-    public void Decrypt_With_Tampered_Tag_Should_Fail()
+    public void DecryptWithTamperedTagShouldFail()
     {
         // Given
-        var service = new AesGcmCryptoService();
+        AesGcmCryptoService service = new AesGcmCryptoService();
         byte[] key = new byte[32];
         RandomNumberGenerator.Fill(key);
         byte[] plainText = "Sensitive Data"u8.ToArray();
-        var encryptResult = service.Encrypt(plainText, key);
+        Result<(byte[] CipherText, byte[] Nonce, byte[] Tag)> encryptResult = service.Encrypt(plainText, key);
 
         byte[] tamperedTag = (byte[])encryptResult.Value.Tag.Clone();
         tamperedTag[0] ^= 0xFF;
 
         // When
-        var decryptResult = service.Decrypt(
+        Result<byte[]> decryptResult = service.Decrypt(
             encryptResult.Value.CipherText,
             encryptResult.Value.Nonce,
             tamperedTag,
@@ -78,21 +79,21 @@ public sealed class AesGcmCryptoServiceTest
     }
 
     [Fact]
-    public void Decrypt_With_Invalid_Key_Should_Fail()
+    public void DecryptWithInvalidKeyShouldFail()
     {
         // Given
-        var service = new AesGcmCryptoService();
-        var validKey = new byte[32];
-        var invalidKey = new byte[32];
+        AesGcmCryptoService service = new AesGcmCryptoService();
+        byte[] validKey = new byte[32];
+        byte[] invalidKey = new byte[32];
         RandomNumberGenerator.Fill(validKey);
         RandomNumberGenerator.Fill(invalidKey);
-        var plainText = "Confidential Information"u8.ToArray();
+        byte[] plainText = "Confidential Information"u8.ToArray();
 
-        var encryptResult = service.Encrypt(plainText, validKey);
+        Result<(byte[] CipherText, byte[] Nonce, byte[] Tag)> encryptResult = service.Encrypt(plainText, validKey);
         encryptResult.IsSuccess.Should().BeTrue();
 
         // When
-        var decryptResult = service.Decrypt(
+        Result<byte[]> decryptResult = service.Decrypt(
             encryptResult.Value.CipherText,
             encryptResult.Value.Nonce,
             encryptResult.Value.Tag,

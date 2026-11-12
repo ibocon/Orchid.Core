@@ -11,7 +11,7 @@ namespace Orchid.UnitTests.Core;
 public sealed class PairingKeyTest
 {
     [Fact]
-    public void Parse_When_Payload_Roundtrips_Should_Keep_PairingId_And_Key()
+    public void ParseWhenPayloadRoundtripsShouldKeepPairingIdAndKey()
     {
         // Given
         PairingKey original = PairingKey.Generate();
@@ -31,7 +31,7 @@ public sealed class PairingKeyTest
     [InlineData("other-prefix:AAAA")]
     [InlineData("orchid-pair:v1:AAAA")]
     [InlineData("orchid-pair:v1:@@@@")]
-    public void Parse_When_Payload_Invalid_Should_Return_Validation_Failure(string? payload)
+    public void ParseWhenPayloadInvalidShouldReturnValidationFailure(string? payload)
     {
         // When
         Result<PairingKey> parsed = PairingKey.Parse(payload);
@@ -42,7 +42,7 @@ public sealed class PairingKeyTest
     }
 
     [Fact]
-    public void GetKeyBytes_When_Mutated_Should_Not_Affect_Key()
+    public void GetKeyBytesWhenMutatedShouldNotAffectKey()
     {
         // Given
         PairingKey key = PairingKey.Generate();

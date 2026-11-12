@@ -15,7 +15,7 @@ namespace Orchid.UnitTests.Core;
 public sealed class ClipboardSyncCoordinatorTest
 {
     [Fact]
-    public async Task OnLocalChange_When_Text_Copied_Should_Send_Encrypted_Payload_To_Pairing_Group()
+    public async Task OnLocalChangeWhenTextCopiedShouldSendEncryptedPayloadToPairingGroup()
     {
         // Given
         PairingKey key = PairingKey.Generate();
@@ -31,7 +31,7 @@ public sealed class ClipboardSyncCoordinatorTest
     }
 
     [Fact]
-    public async Task OnRemote_When_Payload_Received_Should_Write_Plain_Text_To_Clipboard()
+    public async Task OnRemoteWhenPayloadReceivedShouldWritePlainTextToClipboard()
     {
         // Given
         PairingKey key = PairingKey.Generate();
@@ -46,7 +46,7 @@ public sealed class ClipboardSyncCoordinatorTest
     }
 
     [Fact]
-    public async Task OnLocalChange_When_Remote_Payload_Just_Applied_Should_Not_Echo_Back()
+    public async Task OnLocalChangeWhenRemotePayloadJustAppliedShouldNotEchoBack()
     {
         // Given
         PairingKey key = PairingKey.Generate();
@@ -62,7 +62,7 @@ public sealed class ClipboardSyncCoordinatorTest
     }
 
     [Fact]
-    public async Task OnRemote_When_Payload_Encrypted_With_Other_Key_Should_Throw_And_Keep_Clipboard()
+    public async Task OnRemoteWhenPayloadEncryptedWithOtherKeyShouldThrowAndKeepClipboard()
     {
         // Given
         PairingKey key = PairingKey.Generate();
@@ -79,7 +79,7 @@ public sealed class ClipboardSyncCoordinatorTest
     }
 
     [Fact]
-    public async Task StartAsync_When_Connect_Pending_Should_Start_Change_Source_On_Caller_Thread_Before_Connect_Completes()
+    public async Task StartAsyncWhenConnectPendingShouldStartChangeSourceOnCallerThreadBeforeConnectCompletes()
     {
         // Given
         PairingKey key = PairingKey.Generate();
@@ -97,7 +97,7 @@ public sealed class ClipboardSyncCoordinatorTest
     }
 
     [Fact]
-    public async Task OnLocalChange_When_Raised_Before_Connect_Completes_Should_Send_After_Connect()
+    public async Task OnLocalChangeWhenRaisedBeforeConnectCompletesShouldSendAfterConnect()
     {
         // Given
         PairingKey key = PairingKey.Generate();

@@ -10,10 +10,10 @@ namespace Orchid.UnitTests.Core;
 public sealed class ResultAndErrorTest
 {
     [Fact]
-    public void Result_Success_Should_Have_IsSuccess_True_And_NoError()
+    public void ResultSuccessShouldHaveIsSuccessTrueAndNoError()
     {
         // Given & When
-        var result = Result.Success();
+        Result result = Result.Success();
 
         // Then
         result.IsSuccess.Should().BeTrue();
@@ -22,10 +22,10 @@ public sealed class ResultAndErrorTest
     }
 
     [Fact]
-    public void ResultOfT_Failure_Should_Throw_When_Accessing_Value()
+    public void ResultOfTFailureShouldThrowWhenAccessingValue()
     {
         // Given
-        var result = Result<string>.Failure(Error.General("Failed operation"));
+        Result<string> result = Result<string>.Failure(Error.General("Failed operation"));
 
         // When & Then
         Action act = () => _ = result.Value;

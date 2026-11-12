@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Moq;
 using Orchid.Core.Cryptography;
+using Orchid.Core.Domain.Common;
 using Orchid.Core.Storage;
 using Orchid.Core.Sync;
 using Xunit;
@@ -13,20 +14,20 @@ namespace Orchid.UnitTests.Core;
 public sealed class SyncEngineTest
 {
     [Fact]
-    public async Task ProcessLocalClipboardAsync_When_Duplicate_Content_Should_Return_Failure()
+    public async Task ProcessLocalClipboardAsyncWhenDuplicateContentShouldReturnFailure()
     {
         // Given
-        var cryptoMock = new Mock<IAesGcmCryptoService>();
-        var repoMock = new Mock<IClipboardRepository>();
+        Mock<IAesGcmCryptoService> cryptoMock = new Mock<IAesGcmCryptoService>();
+        Mock<IClipboardRepository> repoMock = new Mock<IClipboardRepository>();
 
         repoMock.Setup(r => r.ExistsByHashAsync(It.IsAny<string>()))
             .ReturnsAsync(true);
 
-        var engine = new SyncEngine(cryptoMock.Object, repoMock.Object);
+        SyncEngine engine = new SyncEngine(cryptoMock.Object, repoMock.Object);
         byte[] key = new byte[32];
 
         // When
-        var result = await engine.ProcessLocalClipboardAsync("Duplicate Text", Guid.NewGuid(), key);
+        Result<EncryptedPayload> result = await engine.ProcessLocalClipboardAsync("Duplicate Text", Guid.NewGuid(), key);
 
         // Then
         result.IsFailure.Should().BeTrue();
