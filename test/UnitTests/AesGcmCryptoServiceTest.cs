@@ -12,7 +12,7 @@ public sealed class AesGcmCryptoServiceTest
     public void EncryptAndDecryptShouldRestoreOriginalPlainText()
     {
         // Given
-        AesGcmCryptoService service = new AesGcmCryptoService();
+        AesGcmCryptoService service = new();
         byte[] key = new byte[32];
         RandomNumberGenerator.Fill(key);
         byte[] plainText = "Sensitive Clipboard Data"u8.ToArray();
@@ -42,7 +42,7 @@ public sealed class AesGcmCryptoServiceTest
     public void EncryptWithInvalidKeyLengthShouldFail(int keyLength)
     {
         // Given
-        AesGcmCryptoService service = new AesGcmCryptoService();
+        AesGcmCryptoService service = new();
         byte[] invalidKey = new byte[keyLength];
         byte[] plainText = "Sample Data"u8.ToArray();
 
@@ -58,7 +58,7 @@ public sealed class AesGcmCryptoServiceTest
     public void DecryptWithTamperedTagShouldFail()
     {
         // Given
-        AesGcmCryptoService service = new AesGcmCryptoService();
+        AesGcmCryptoService service = new();
         byte[] key = new byte[32];
         RandomNumberGenerator.Fill(key);
         byte[] plainText = "Sensitive Data"u8.ToArray();
@@ -82,7 +82,7 @@ public sealed class AesGcmCryptoServiceTest
     public void DecryptWithInvalidKeyShouldFail()
     {
         // Given
-        AesGcmCryptoService service = new AesGcmCryptoService();
+        AesGcmCryptoService service = new();
         byte[] validKey = new byte[32];
         byte[] invalidKey = new byte[32];
         RandomNumberGenerator.Fill(validKey);

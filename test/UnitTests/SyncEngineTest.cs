@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Moq;
+using Orchid.Contract.Payload;
 using Orchid.Core.Cryptography;
 using Orchid.Core.Domain.Common;
 using Orchid.Core.Storage;
@@ -17,13 +18,13 @@ public sealed class SyncEngineTest
     public async Task ProcessLocalClipboardAsyncWhenDuplicateContentShouldReturnFailure()
     {
         // Given
-        Mock<IAesGcmCryptoService> cryptoMock = new Mock<IAesGcmCryptoService>();
-        Mock<IClipboardRepository> repoMock = new Mock<IClipboardRepository>();
+        Mock<IAesGcmCryptoService> cryptoMock = new();
+        Mock<IClipboardRepository> repoMock = new();
 
         repoMock.Setup(r => r.ExistsByHashAsync(It.IsAny<string>()))
             .ReturnsAsync(true);
 
-        SyncEngine engine = new SyncEngine(cryptoMock.Object, repoMock.Object);
+        SyncEngine engine = new(cryptoMock.Object, repoMock.Object);
         byte[] key = new byte[32];
 
         // When
