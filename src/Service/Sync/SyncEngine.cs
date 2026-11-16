@@ -56,7 +56,7 @@ public sealed class SyncEngine : ISyncEngine
         Guid id = Guid.NewGuid();
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        ClipboardItem item = new(
+        Result<ClipboardItem> itemResult = ClipboardItem.Create(
             id,
             deviceId,
             DevicePlatform.Windows,
@@ -66,8 +66,14 @@ public sealed class SyncEngine : ISyncEngine
             tag,
             hash,
             now);
+        if (itemResult.IsFailure)
+        {
+            return Result<EncryptedPayload>.Failure(itemResult.Error);
+        }
 
-        await _repository.UpsertAsync(item).ConfigureAwait(false);
+        await _repository
+            .UpsertAsync(itemResult.Value)
+            .ConfigureAwait(false);
 
         EncryptedPayload payload = new(
             id,
@@ -94,7 +100,7 @@ public sealed class SyncEngine : ISyncEngine
         string plainText = Encoding.UTF8.GetString(decryptResult.Value);
         string hash = PayloadHash.FromString(plainText).Value;
 
-        ClipboardItem item = new(
+        Result<ClipboardItem> itemResult = ClipboardItem.Create(
             payload.Id,
             Guid.Empty,
             DevicePlatform.Windows,
@@ -104,8 +110,14 @@ public sealed class SyncEngine : ISyncEngine
             payload.Tag,
             hash,
             payload.CreatedAtUtc);
+        if (itemResult.IsFailure)
+        {
+            return Result<string>.Failure(itemResult.Error);
+        }
 
-        await _repository.UpsertAsync(item).ConfigureAwait(false);
+        await _repository
+            .UpsertAsync(itemResult.Value)
+            .ConfigureAwait(false);
 
         return Result<string>.Success(plainText);
     }

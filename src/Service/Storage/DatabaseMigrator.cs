@@ -24,7 +24,11 @@ public sealed class DatabaseMigrator
     public async Task MigrateAsync()
     {
         // SQLite-net의 CreateTableAsync는 테이블이 이미 존재하면 새 컬럼을 자동 추가하는 멱등성(Idempotent) 마이그레이션을 수행합니다.
-        await _db.CreateTableAsync<Domain.Entity.ClipboardItem>().ConfigureAwait(false);
-        await _db.CreateTableAsync<Domain.Entity.DeviceSession>().ConfigureAwait(false);
+        await _db
+            .CreateTableAsync<ClipboardItemRow>()
+            .ConfigureAwait(false);
+        await _db
+            .CreateTableAsync<DeviceSessionRow>()
+            .ConfigureAwait(false);
     }
 }

@@ -29,8 +29,12 @@ public sealed class SqliteClipboardRepository : IClipboardRepository
             return;
         }
 
-        await _db.CreateTableAsync<ClipboardItem>().ConfigureAwait(false);
-        await _db.CreateTableAsync<DeviceSession>().ConfigureAwait(false);
+        await _db
+            .CreateTableAsync<ClipboardItemRow>()
+            .ConfigureAwait(false);
+        await _db
+            .CreateTableAsync<DeviceSessionRow>()
+            .ConfigureAwait(false);
         _initialized = true;
     }
 
@@ -39,24 +43,28 @@ public sealed class SqliteClipboardRepository : IClipboardRepository
     {
         ArgumentNullException.ThrowIfNull(item);
         await InitializeAsync().ConfigureAwait(false);
-        await _db.InsertOrReplaceAsync(item).ConfigureAwait(false);
+        await _db
+            .InsertOrReplaceAsync(ClipboardItemRow.From(item))
+            .ConfigureAwait(false);
     }
 
     /// <inheritdoc />
     public async Task<ClipboardItem?> GetByIdAsync(Guid id)
     {
         await InitializeAsync().ConfigureAwait(false);
-        return await _db.Table<ClipboardItem>()
+        ClipboardItemRow? row = await _db.Table<ClipboardItemRow>()
             .Where(x => x.Id == id && !x.IsDeleted)
             .FirstOrDefaultAsync()
             .ConfigureAwait(false);
+
+        return row?.ToDomain();
     }
 
     /// <inheritdoc />
     public async Task<IReadOnlyList<ClipboardItem>> GetRecentAsync(int skip = 0, int take = 50)
     {
         await InitializeAsync().ConfigureAwait(false);
-        List<ClipboardItem> items = await _db.Table<ClipboardItem>()
+        List<ClipboardItemRow> rows = await _db.Table<ClipboardItemRow>()
             .Where(x => !x.IsDeleted)
             .OrderByDescending(x => x.CreatedAtUtc)
             .Skip(skip)
@@ -64,7 +72,7 @@ public sealed class SqliteClipboardRepository : IClipboardRepository
             .ToListAsync()
             .ConfigureAwait(false);
 
-        return items;
+        return [.. rows.Select(row => row.ToDomain())];
     }
 
     /// <inheritdoc />
@@ -76,7 +84,7 @@ public sealed class SqliteClipboardRepository : IClipboardRepository
         }
 
         await InitializeAsync().ConfigureAwait(false);
-        int count = await _db.Table<ClipboardItem>()
+        int count = await _db.Table<ClipboardItemRow>()
             .Where(x => x.PayloadHash == payloadHash && !x.IsDeleted)
             .CountAsync()
             .ConfigureAwait(false);
@@ -91,8 +99,10 @@ public sealed class SqliteClipboardRepository : IClipboardRepository
         ClipboardItem? item = await GetByIdAsync(id).ConfigureAwait(false);
         if (item is not null)
         {
-            item.IsDeleted = true;
-            await _db.UpdateAsync(item).ConfigureAwait(false);
+            item.Delete();
+            await _db
+                .UpdateAsync(ClipboardItemRow.From(item))
+                .ConfigureAwait(false);
         }
     }
 }

@@ -2,6 +2,8 @@
 using FluentAssertions;
 // keep: NetArchTest fluent rules
 using NetArchTest.Rules;
+// keep: BindingFlags for entity member inspection
+using System.Reflection;
 // keep: xUnit Fact attribute
 using Xunit;
 
@@ -58,5 +60,57 @@ public sealed class CoreArchitectureRulesTest
 
         // Then
         result.IsSuccessful.Should().BeTrue("Core 도메인의 구체 클래스는 상속 오용 방지를 위해 sealed여야 합니다.");
+    }
+
+    /// <summary>
+    /// 도메인이 저장 기술(SQLite)을 알지 못하는지 검증합니다.
+    /// </summary>
+    [Fact]
+    public void DomainShouldNotDependOnSqlite()
+    {
+        // Given & When
+        // ✅ 매핑 특성이 도메인으로 돌아오지 않도록 SQLite 의존을 막는다
+        TestResult result = Types.InAssembly(CoreArchitecture.CoreAssembly)
+            .That()
+            .ResideInNamespace("Orchid.Core.Domain")
+            .ShouldNot()
+            .HaveDependencyOnAny("SQLite", "SQLitePCL")
+            .GetResult();
+
+        // Then
+        result.IsSuccessful.Should().BeTrue(
+            "도메인은 저장 기술을 몰라야 합니다. 실패한 타입: {0}",
+            string.Join(", ", result.FailingTypeNames ?? []));
+    }
+
+    /// <summary>
+    /// 도메인 엔티티가 공개 생성자와 공개 setter를 노출하지 않는지 검증합니다.
+    /// </summary>
+    [Fact]
+    public void DomainEntitiesShouldNotExposePublicConstructorsOrSetters()
+    {
+        // Given
+        Type[] entities =
+        [
+            .. CoreArchitecture.CoreAssembly
+                .GetTypes()
+                .Where(t => t.Namespace == "Orchid.Core.Domain.Entity" && t.IsClass && !t.IsAbstract)
+        ];
+
+        // When
+        string[] violations =
+        [
+            .. entities.SelectMany(t => t
+                .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
+                .Select(_ => $"{t.Name}: public constructor")),
+            .. entities.SelectMany(t => t
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.SetMethod is { IsPublic: true })
+                .Select(p => $"{t.Name}.{p.Name}: public setter")),
+        ];
+
+        // Then
+        // ✅ 위반한 타입과 멤버가 실패 메시지에 그대로 나타난다
+        violations.Should().BeEmpty("도메인 엔티티는 팩토리와 행위 메서드로만 만들고 바꿔야 합니다.");
     }
 }
