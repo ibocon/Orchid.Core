@@ -10,7 +10,7 @@
     <PackageVersion Include="Flurl" Version="4.0.0" />
     <PackageVersion Include="Garden.Aspire" Version="10.0.0" />
     <PackageVersion Include="Garden.Razor" Version="10.0.0" />
-    <PackageVersion Include="Garden.Share" Version="10.0.0" />
+    <PackageVersion Include="Garden.Share" Version="10.0.1-ci.48.ga1924e6" />
     <PackageVersion Include="MediatR" Version="12.4.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" />

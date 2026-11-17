@@ -93,7 +93,7 @@ public sealed class ClipboardSyncCoordinatorTest
         source.StartedOnThreadId.Should().Be(Environment.CurrentManagedThreadId);
 
         relay.ConnectGate.SetResult();
-        await start;
+        await start.ConfigureAwait(true);
     }
 
     [Fact]
@@ -108,8 +108,8 @@ public sealed class ClipboardSyncCoordinatorTest
 
         // When
         relay.ConnectGate.SetResult();
-        await start;
-        await changed;
+        await start.ConfigureAwait(true);
+        await changed.ConfigureAwait(true);
 
         // Then
         relay.Sent.Should().ContainSingle();

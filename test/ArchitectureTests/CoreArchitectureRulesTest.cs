@@ -14,11 +14,27 @@ namespace Orchid.Core.ArchTests;
 /// </summary>
 public sealed class CoreArchitectureRulesTest
 {
+    [Fact]
+    public void CoreAssemblyShouldNotDependOnUiFrameworks()
+    {
+        TestResult result = Types.InAssembly(CoreArchitecture.CoreAssembly)
+            .ShouldNot()
+            .HaveDependencyOnAny(
+                "Garden.Razor",
+                "Microsoft.AspNetCore.Components",
+                "MudBlazor",
+                "Microsoft.Maui")
+            .GetResult();
+
+        result.IsSuccessful.Should().BeTrue(
+            "Core는 Garden.Share 계약까지만 허용하며 UI 프레임워크에 의존해서는 안 됩니다.");
+    }
+
     /// <summary>
     /// Core 도메인이 플랫폼 UI 및 프레임워크에 오염되지 않는지 검증합니다.
     /// </summary>
     [Fact]
-    public void Domain_ShouldNotDependOn_PlatformOrUiFrameworks()
+    public void DomainShouldNotDependOnPlatformOrUiFrameworks()
     {
         // Given & When
         // ✅ Core 도메인이 플랫폼 UI 및 프레임워크에 오염되지 않음을 강제
@@ -43,7 +59,7 @@ public sealed class CoreArchitectureRulesTest
     /// 도메인 불변성 유지를 위해 비추상 엔티티와 값 객체가 sealed로 선언되어 있는지 검증합니다.
     /// </summary>
     [Fact]
-    public void DomainEntitiesAndValueObjects_ShouldBeSealed()
+    public void DomainEntitiesAndValueObjectsShouldBeSealed()
     {
         // Given & When
         // ✅ 도메인 불변성 유지를 위해 비추상 엔티티와 값 객체의 sealed 강제

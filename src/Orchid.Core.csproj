@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Garden.Share" />
     <PackageReference Include="Orchid.Contract" />
     <PackageReference Include="Orchid.Clipboard.Client" />
     <PackageReference Include="sqlite-net-pcl" />
