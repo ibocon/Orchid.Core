@@ -18,16 +18,16 @@ public sealed class OrchidLoginBrandingTest
     }
 
     [Fact]
-    public void CreateReturnsGoogleKakaoMicrosoftInOrder()
+    public void CreateReturnsGoogleMicrosoftKakaoInOrder()
     {
         LoginBranding actual = OrchidLoginBranding.Create();
 
         actual.Providers.Select(provider => provider.Key)
             .Should()
-            .Equal("google", "kakao", "microsoft");
+            .Equal("google", "microsoft", "kakao");
         actual.Providers.Select(provider => provider.Kind)
             .Should()
-            .Equal(LoginProviderKind.Google, LoginProviderKind.Kakao, LoginProviderKind.Microsoft);
+            .Equal(LoginProviderKind.Google, LoginProviderKind.Microsoft, LoginProviderKind.Kakao);
     }
 
     [Fact]
