@@ -24,12 +24,12 @@ public static class OrchidLoginBranding
     private static readonly LoginProviderOption[] Providers =
     [
         new(IdentityProvider.Google, LoginProviderKind.Google),
-        new(IdentityProvider.Kakao, LoginProviderKind.Kakao),
         new(IdentityProvider.Microsoft, LoginProviderKind.Microsoft),
+        new(IdentityProvider.Kakao, LoginProviderKind.Kakao),
     ];
 
     /// <summary>
-    /// Orchid 로그인 화면 브랜딩을 만든다. 공급자는 문화권과 무관하게 Google, Kakao, Microsoft 순서다.
+    /// Orchid 로그인 화면 브랜딩을 만든다. 공급자는 문화권과 무관하게 Google, Microsoft, Kakao 순서다.
     /// </summary>
     /// <param name="logoSource">로고 이미지 주소. 기본값은 <see cref="DefaultLogoSource"/>다.</param>
     /// <param name="allowCancel">로그인 진행 중 취소 버튼을 표시할지 여부다.</param>
