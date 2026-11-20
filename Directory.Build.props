@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <VersionPrefix>0.3.0</VersionPrefix>
+    <VersionPrefix>0.3.1</VersionPrefix>
     <Authors>Yegun Kim (@ibocon)</Authors>
     <Company>Orchid Project</Company>
     <Product>Orchid Universal E2EE Clipboard Ecosystem</Product>
